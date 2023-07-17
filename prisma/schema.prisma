@@ -1,0 +1,29 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Guilds {
+  id   String        @id @map("_id")
+  users GuildUser[]
+}
+
+model User {
+  id    String        @id @map("_id")
+  username String 
+  guilds GuildUser[]
+}
+
+model GuildUser {
+  id   String @id @map("_id")
+  guildId  String
+  coins    Int        @default(0)
+  user     User       @relation(fields: [id], references: [id])
+  guild    Guilds     @relation(fields: [guildId], references: [id])
+
+  @@unique([id, guildId])
+}
